@@ -6,12 +6,27 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip \
+            python3-dev \
+            liblzma-dev \
+            build-essential \
+            git wget zip unzip curl axel
+  
+      - name: Install Python dependencies
+        run: |
+          pip install protobuf pycryptodome
+      
       - name: Load Configuration
         uses: falti/dotenv-action@v0.2.5
         id: config
@@ -37,10 +52,6 @@ jobs:
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get clean
           df -h
-
-      - name: Initializing Environment
-        run: |
-          sudo apt-get install -y git wget git zip unzip curl axel
 
       - name: Cloning SGSI source code
         run: |
